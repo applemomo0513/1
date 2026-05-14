@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>月星家居茂 · 家，是动词 — 520 家庭日</title>
+<style>
+:root {
+  --cream: #FAF7F2;
+  --wood: #C4A882;
+  --wood-dark: #A0845C;
+  --green: #2D4A3E;
+  --green-light: #3A5F50;
+  --card: #FFFDF7;
+  --text: #3D322B;
+  --text-light: #8B7E74;
+  --text-muted: #B0A69B;
+  --border: #E8E0D5;
+  --shadow-sm: 0 2px 8px rgba(61,50,43,0.06);
+  --shadow-md: 0 4px 20px rgba(61,50,43,0.10);
+  --shadow-lg: 0 8px 40px rgba(61,50,43,0.14);
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --max-width: 800px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ── Container ── */
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+}
+
+/* ── Invitation Overlay ── */
+.invitation-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #EDE8DF;
+  background-image:
+    radial-gradient(ellipse at 30% 20%, rgba(196,168,130,0.15) 0%, transparent 60%),
+    radial-gradient(ellipse at 70% 80%, rgba(45,74,62,0.08) 0%, transparent 60%),
+    repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(61,50,43,0.015) 3px, rgba(61,50,43,0.015) 4px);
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+.invitation-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.invitation-card {
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  padding: 48px 36px 40px;
+  max-width: 420px;
+  width: calc(100% - 48px);
+  text-align: center;
+  box-shadow: var(--shadow-lg), 0 0 0 1px rgba(196,168,130,0.2);
+  position: relative;
+  transform: translateY(0);
+  transition: transform 0.8s cubic-bezier(0.34,1.56,0.64,1), opacity 0.6s ease;
+}
+.invitation-card.opening {
+  transform: scale(0.92) translateY(-120%);
+  opacity: 0;
+}
+
+.invitation-seal {
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 20px;
+  opacity: 0.9;
+}
+.invitation-seal img { width: 100%; height: 100%; object-fit: contain; }
+
+.invitation-card .overline {
+  font-size: 13px;
+  letter-spacing: 4px;
+  color: var(--wood-dark);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.invitation-card h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--green);
+  line-height: 1.4;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+.invitation-card .subtitle {
+  font-size: 14px;
+  color: var(--text-light);
+  margin-bottom: 32px;
+  line-height: 1.6;
+}
+
+.invitation-card .decorative-line {
+  width: 48px;
+  height: 2px;
+  background: var(--wood);
+  margin: 0 auto 28px;
+  border-radius: 1px;
+}
+
+.btn-open {
+  display: inline-block;
+  background: var(--green);
+  color: #fff;
+  border: none;
+  padding: 14px 40px;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 16px rgba(45,74,62,0.25);
+}
+.btn-open:hover { background: var(--green-light); transform: translateY(-1px); box-shadow: 0 6px 24px rgba(45,74,62,0.35); }
+.btn-open:active { transform: translateY(0); }
+
+.invitation-card .footer-hint {
+  margin-top: 28px;
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+}
+
+/* ── Main Page (hidden until invitation opens) ── */
+.main-page {
+  opacity: 0;
+  transition: opacity 0.8s ease 0.1s;
+}
+.main-page.visible { opacity: 1; }
+
+/* ── Navigation ── */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(250,247,242,0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.nav::-webkit-scrollbar { display: none; }
+
+.nav-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.nav a {
+  display: inline-block;
+  padding: 7px 15px;
+  border-radius: 20px;
+  font-size: 13px;
+  color: var(--text-light);
+  text-decoration: none;
+  transition: all 0.3s;
+  flex-shrink: 0;
+  font-weight: 500;
+}
+.nav a:hover,
+.nav a.active { background: var(--green); color: #fff; }
+
+/* ── Hero ── */
+.hero {
+  text-align: center;
+  padding: 45px 24px 38px;
+  position: relative;
+}
+.hero-tag {
+  display: inline-block;
+  background: rgba(196,168,130,0.18);
+  color: var(--wood-dark);
+  padding: 6px 18px;
+  border-radius: 20px;
+  font-size: 13px;
+  letter-spacing: 2px;
+  margin-bottom: 20px;
+}
+.hero h1 {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--green);
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+.hero .hero-sub {
+  font-size: 15px;
+  color: var(--text-light);
+  max-width: 360px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+/* ── Section ── */
+.section {
+  padding: 42px 0;
+}
+.section-header {
+  text-align: center;
+  margin-bottom: 29px;
+}
+.section-header .section-num {
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: var(--wood-dark);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+.section-header h2 {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--green);
+  letter-spacing: 1px;
+}
+.section-header .section-line {
+  width: 36px;
+  height: 2px;
+  background: var(--wood);
+  margin: 14px auto 0;
+  border-radius: 1px;
+}
+
+/* ── Cards ── */
+.card {
+  background: var(--card);
+  border-radius: var(--radius-md);
+  padding: 28px 24px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(232,224,213,0.6);
+}
+
+/* ── Section 1: Theme ── */
+.theme-quote {
+  background: var(--card);
+  border-radius: var(--radius-md);
+  padding: 22px 24px;
+  border-left: 4px solid var(--wood);
+  margin-bottom: 19px;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--green);
+  line-height: 1.8;
+  box-shadow: var(--shadow-sm);
+}
+
+.theme-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 19px;
+}
+.theme-action {
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  padding: 22px 14px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(232,224,213,0.6);
+}
+.theme-action .icon {
+  font-size: 36px;
+  margin-bottom: 10px;
+  display: block;
+}
+.theme-action .label {
+  font-size: 13px;
+  color: var(--text-light);
+  font-weight: 500;
+}
+
+.theme-banner {
+  background: linear-gradient(135deg, var(--green), var(--green-light));
+  color: #fff;
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  box-shadow: var(--shadow-md);
+}
+
+/* ── Section 2: Experience ── */
+.exp-steps { position: relative; }
+
+.exp-steps::before {
+  content: '';
+  position: absolute;
+  left: 23px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--wood), var(--green), var(--wood));
+  border-radius: 1px;
+}
+
+.exp-step {
+  position: relative;
+  padding-left: 56px;
+  margin-bottom: 26px;
+}
+.exp-step:last-child { margin-bottom: 0; }
+
+.exp-step-num {
+  position: absolute;
+  left: 0;
+  top: 4px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--card);
+  border: 2px solid var(--wood);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--green);
+  z-index: 1;
+  box-shadow: var(--shadow-sm);
+}
+
+.exp-step.card { margin-bottom: 26px; }
+.exp-step.card:last-child { margin-bottom: 0; }
+
+.exp-step h3 {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--green);
+  margin-bottom: 4px;
+}
+.exp-step .step-location {
+  font-size: 12px;
+  color: var(--wood-dark);
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+.exp-step p { font-size: 14px; color: var(--text-light); line-height: 1.8; }
+.exp-step .step-img {
+  margin-top: 14px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  width: 100%;
+}
+.exp-step .step-img img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius-sm);
+}
+.exp-step .step-touch {
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* ── Section 3: Data ── */
+.data-cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 13px;
+  margin-bottom: 22px;
+}
+.data-card {
+  background: var(--card);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(232,224,213,0.6);
+}
+.data-card h4 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--green);
+  margin-bottom: 8px;
+}
+.data-card p { font-size: 13px; color: var(--text-light); line-height: 1.8; }
+
+.flow-chart {
+  background: var(--card);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+}
+.flow-chart .flow-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px 2px;
+}
+.flow-step {
+  background: var(--green);
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.flow-arrow {
+  color: var(--wood);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.mini-app-note {
+  margin-top: 16px;
+  background: rgba(196,168,130,0.1);
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  font-size: 13px;
+  color: var(--text-light);
+  text-align: center;
+  line-height: 1.7;
+}
+.mini-app-note strong { color: var(--green); }
+
+/* ── Section 4: Social + Timeline ── */
+.social-timeline-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 22px;
+}
+@media (min-width: 640px) {
+  .social-timeline-grid { grid-template-columns: 1fr 1fr; }
+}
+
+.social-block { }
+.social-block h3 {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--green);
+  margin-bottom: 16px;
+}
+.social-tag {
+  display: inline-block;
+  background: linear-gradient(135deg, #FF5A5F, #E84A4F);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.social-tag.douyin {
+  background: linear-gradient(135deg, #111, #333);
+  margin-left: 6px;
+}
+.social-item {
+  margin-bottom: 14px;
+  font-size: 13px;
+  color: var(--text-light);
+  line-height: 1.8;
+  padding-left: 16px;
+  border-left: 2px solid var(--border);
+}
+.social-kids {
+  margin-top: 16px;
+  background: rgba(196,168,130,0.1);
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+  font-size: 13px;
+  color: var(--text-light);
+  line-height: 1.7;
+}
+.social-kids .kids-tag {
+  display: inline-block;
+  background: #FF9F43;
+  color: #fff;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.timeline-block h3 {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--green);
+  margin-bottom: 16px;
+}
+.timeline-item {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.timeline-dot {
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--wood);
+  margin-top: 6px;
+}
+.timeline-item:nth-child(1) .timeline-dot { background: #D4A853; }
+.timeline-item:nth-child(2) .timeline-dot { background: var(--green); }
+.timeline-item:nth-child(3) .timeline-dot { background: #6B8F7E; }
+
+.timeline-content h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+.timeline-content .tl-date {
+  font-size: 12px;
+  color: var(--wood-dark);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.timeline-content p {
+  font-size: 12px;
+  color: var(--text-light);
+  line-height: 1.7;
+}
+
+/* ── Section 5: Highlights ── */
+.highlights-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 13px;
+}
+@media (min-width: 480px) {
+  .highlights-grid { grid-template-columns: 1fr 1fr; }
+}
+
+.highlight-card {
+  background: var(--card);
+  border-radius: var(--radius-md);
+  padding: 24px 20px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(232,224,213,0.6);
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.highlight-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.highlight-card .hl-icon {
+  font-size: 40px;
+  margin-bottom: 14px;
+  display: block;
+}
+.highlight-card h4 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--green);
+  margin-bottom: 8px;
+}
+.highlight-card p {
+  font-size: 12px;
+  color: var(--text-light);
+  line-height: 1.7;
+}
+
+/* ── Footer ── */
+.footer {
+  text-align: center;
+  padding: 32px 24px;
+  border-top: 1px solid var(--border);
+  margin-top: 16px;
+}
+.footer .footer-text {
+  font-size: 13px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  line-height: 1.8;
+}
+
+/* ── Fade-in on scroll ── */
+.fade-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+
+/* ── Responsive ── */
+@media (max-width: 374px) {
+  .container { padding: 0 16px; }
+  .hero h1 { font-size: 28px; }
+  .invitation-card { padding: 36px 24px 32px; }
+  .invitation-card h1 { font-size: 24px; }
+  .theme-actions { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .theme-action { padding: 16px 8px; }
+  .theme-action .icon { font-size: 28px; }
+  .theme-action .label { font-size: 11px; }
+  .flow-step { font-size: 11px; padding: 6px 10px; }
+}
+
+@media (min-width: 640px) {
+  .container { padding: 0 32px; }
+  .section { padding: 51px 0; }
+  .hero h1 { font-size: 42px; }
+  .data-cards { grid-template-columns: repeat(3, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════ INVITATION OVERLAY ════════════════ -->
+<div class="invitation-overlay" id="invitationOverlay">
+  <div class="invitation-card" id="invitationCard">
+    <div class="invitation-seal">
+      <img src="img/seal.png" alt="seal" onerror="this.style.display='none'">
+    </div>
+    <div class="overline">· 月星家居茂 ·</div>
+    <h1>致每一个<br>动手打造家的你</h1>
+    <div class="subtitle">月星家居茂 520 家庭日<br>「家，是动词」主题策展活动</div>
+    <div class="decorative-line"></div>
+    <button class="btn-open" id="btnOpen">开 启 邀 请 函</button>
+    <div class="footer-hint">澳门路店 · 把美好生活带入每个家</div>
+  </div>
+</div>
+
+<!-- ════════════════ MAIN PAGE ════════════════ -->
+<div class="main-page" id="mainPage">
+
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="#concept">主题概念</a>
+      <a href="#experience">体验链路</a>
+      <a href="#data">数据沉淀</a>
+      <a href="#social">线上话题与时间线</a>
+      <a href="#highlights">方案亮点</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-tag">520 家庭日</div>
+    <h1>家，是动词</h1>
+    <p class="hero-sub">月星家居茂 · 把美好生活带入每个家</p>
+  </section>
+
+  <div class="container">
+
+    <!-- ═══ Section 1: 主题概念 ═══ -->
+    <section class="section fade-up" id="concept">
+      <div class="section-header">
+        <div class="section-num">Section 01</div>
+        <h2>家，是动词</h2>
+        <div class="section-line"></div>
+      </div>
+
+      <p style="text-align:center;color:var(--text-light);margin-bottom:28px;font-size:15px;line-height:1.9;">
+        家不是一个静止的名词，不是一套冷冰冰的家具，而是一个动态的动词——是摆弄、挪动、搭配、改造。<br>在月星，消费者不是来看家具，是来亲手搭建自己向往的生活方式。
+      </p>
+
+      <div class="theme-quote">
+        "从'我想要什么家具'，到'我知道我想要什么样的家了'。"
+      </div>
+
+      <div class="theme-actions">
+        <div class="theme-action">
+          <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#2d5a3d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+          <span class="label">触摸微缩模型</span>
+        </div>
+        <div class="theme-action">
+          <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#2d5a3d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18v3M19 18v3"/><path d="M6 18V10a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v8"/><path d="M9 6V3h6v3"/></svg></span>
+          <span class="label">动手摆放家具</span>
+        </div>
+        <div class="theme-action">
+          <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#2d5a3d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="8.5" y1="8.5" x2="17" y2="17"/><line x1="17" y1="7" x2="8.5" y2="15.5"/></svg></span>
+          <span class="label">剪贴拼出理想家</span>
+        </div>
+      </div>
+
+      <div class="theme-banner">
+        把美好生活带入每个家 / 设计，让生活更美好
+      </div>
+    </section>
+
+    <!-- ═══ Section 2: 体验链路 ═══ -->
+    <section class="section fade-up" id="experience">
+      <div class="section-header">
+        <div class="section-num">Section 02</div>
+        <h2>从种子到拼贴——一场动手的旅程</h2>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="exp-steps">
+
+        <!-- Step 1 -->
+        <div class="exp-step card">
+          <div class="exp-step-num">1</div>
+          <h3>种子阶段 · 微缩模型展区</h3>
+          <div class="step-location">📍 一楼大厅</div>
+          <p>设置不同风格家具微缩场景（北欧风、新中式等），每个微缩模型旁附产品信息卡。消费者扫码上传自家房间照片或选择默认风格背景图，生成专属《家庭任务海报》，海报上印有任务指引和空白房型图框架。</p>
+          <div class="step-img"><img src="img/miniature-scene.png" alt="微缩模型展区" onerror="this.parentElement.style.display='none'"></div>
+          <div class="step-touch">心智触点：设计，让生活更美好</div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="exp-step card">
+          <div class="exp-step-num">2</div>
+          <h3>搭建阶段 · 互动样板间</h3>
+          <div class="step-location">📍 各楼层</div>
+          <p>在不同楼层设置不同房间主题互动装置（餐厅、儿童房等），装置中摆放可移动家具，消费者可亲手搭配，真实模拟生活场景，拍照打卡参与话题活动，领取印有不同品牌家具的海报纸。</p>
+          <div class="step-img"><img src="img/sample-room.png" alt="互动样板间" onerror="this.parentElement.style.display='none'"></div>
+          <div class="step-touch">心智触点：动手即设计</div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="exp-step card">
+          <div class="exp-step-num">3</div>
+          <h3>拼贴阶段 · 创作理想家</h3>
+          <div class="step-location">📍 一楼汇总区</div>
+          <p>消费者凭家具海报剪下喜欢的家具，贴在自己的背景底图上，拼成"我理想中的家"，拍照上传小程序，数据可用于后续系统解析风格偏好并推送优惠券。</p>
+          <div class="step-img"><img src="img/collage-example.png" alt="拼贴示例" onerror="this.parentElement.style.display='none'"></div>
+          <div class="step-touch">心智触点：动手即设计</div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="exp-step card">
+          <div class="exp-step-num">4</div>
+          <h3>离场 · 带走记忆</h3>
+          <div class="step-location">📍 出口服务台</div>
+          <p>领取"家，是动词"共创包，含品牌宣传册、限定冰箱贴、品类优惠券和六一活动预约码。</p>
+          <div class="step-touch">心智触点：把美好生活带入每个家</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══ Section 3: 数据收集及私域沉淀 ═══ -->
+    <section class="section fade-up" id="data">
+      <div class="section-header">
+        <div class="section-num">Section 03</div>
+        <h2>每一次动手，都在读懂你</h2>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="data-cards">
+        <div class="data-card">
+          <h4>👤 会员沉淀</h4>
+          <p>上传照片/扫码生成任务海报即完成手机号授权，沉淀为月星私域会员。</p>
+        </div>
+        <div class="data-card">
+          <h4>🏷️ 行为标签</h4>
+          <p>楼层打卡记录品类停留偏好；拼贴作品通过AI解析风格倾向（北欧/新中式/原木等）和品类需求（客厅/卧室/儿童房）。</p>
+        </div>
+        <div class="data-card">
+          <h4>🎯 精准转化</h4>
+          <p>根据用户偏好标签，自动推送对应品类的优惠券至小程序卡包，并可追踪核销。</p>
+        </div>
+      </div>
+
+      <div class="flow-chart">
+        <div class="flow-row">
+          <span class="flow-step">到店</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-step">扫码授权</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-step">楼层打卡</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-step">拼贴上传</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-step">AI解析</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-step">优惠券推送</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-step">购买转化</span>
+        </div>
+      </div>
+
+      <div class="mini-app-note">
+        📱 <strong>小程序</strong> 是全程交互载体，串联预约、任务指引、拍照上传、AI解析和优惠券发放。
+      </div>
+    </section>
+
+    <!-- ═══ Section 4: 线上话题活动及时间线 ═══ -->
+    <section class="section fade-up" id="social">
+      <div class="section-header">
+        <div class="section-num">Section 04</div>
+        <h2>从线下到线上，让家的故事继续</h2>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="social-timeline-grid">
+
+        <!-- Social -->
+        <div class="social-block">
+          <h3>📱 线上话题</h3>
+          <div>
+            <span class="social-tag">📕 小红书</span>
+            <span class="social-tag douyin">🎵 抖音</span>
+          </div>
+          <div class="social-item" style="margin-top:12px;">
+            话题：<strong style="color:var(--green)">#月星把家变成动词</strong><br>
+            消费者发布自己现场摆放家具、拼贴海报的照片或视频，参与话题即有机会获得月星家居礼品卡。
+          </div>
+          <div class="social-kids">
+            <div class="kids-tag">👶 儿童区独立话题</div>
+            <div style="margin-top:6px;">
+              话题：<strong style="color:#E07B30">#月星小小设计师</strong><br>
+              展示孩子"我画我家"作品，点赞前三名获得儿童家具优惠券。
+            </div>
+          </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="timeline-block">
+          <h3>⏱️ 活动时间线</h3>
+
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <h4>预热期</h4>
+              <div class="tl-date">5.13 — 5.19</div>
+              <p>小程序上线预约通道；发布"家，是动词"先导视频；开放上传自家照片提前生成背景底图。</p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <h4>爆发期</h4>
+              <div class="tl-date">5.20 — 5.21</div>
+              <p>线下活动正式开启，微缩模型展、动手样板间、拼贴工坊全面开放；现场 KOL/KOC 探展直播。</p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <h4>延续期</h4>
+              <div class="tl-date">5.22 — 6.1</div>
+              <p>线上话题发酵，拼贴作品投票评选；推送六一家庭日活动预约码，完成用户二次召回。</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 5: 方案亮点 ═══ -->
+    <section class="section fade-up" id="highlights">
+      <div class="section-header">
+        <div class="section-num">Section 05</div>
+        <h2>为什么这是一个好方案</h2>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="highlights-grid">
+        <div class="highlight-card">
+          <span class="hl-icon"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#2d5a3d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V3"/><path d="M4 4l14 6-14 6"/></svg></span>
+          <h4>IP 沉淀</h4>
+          <p>"家，是动词"作为年度家庭日主题，可延展至六一、中秋、春节等节点，形成月星独有的家庭活动 IP。</p>
+        </div>
+        <div class="highlight-card">
+          <span class="hl-icon">💚</span>
+          <h4>用户心智</h4>
+          <p>通过"动手建造"的独特体验，将"月星 = 设计生活 = 家庭团聚"深深植入消费者记忆。</p>
+        </div>
+        <div class="highlight-card">
+          <span class="hl-icon">💡</span>
+          <h4>创意核心</h4>
+          <p>区别于红星美凯龙的潮流秀场、居然之家的科技方案，月星以参与式策展直击情感与创造欲。</p>
+        </div>
+        <div class="highlight-card">
+          <span class="hl-icon">📦</span>
+          <h4>成本可操作性</h4>
+          <p>微缩模型使用 3D 打印 + 手工上色，样板间只需部分可移动中小件家具，海报与小程序开发均为标准化运营动作，总体成本可控。</p>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /container -->
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p class="footer-text">月星家居茂 · 澳门路店<br>把美好生活带入每个家</p>
+  </footer>
+
+</div><!-- /main-page -->
+
+<script>
+(function() {
+  var overlay = document.getElementById('invitationOverlay');
+  var card = document.getElementById('invitationCard');
+  var mainPage = document.getElementById('mainPage');
+  var btnOpen = document.getElementById('btnOpen');
+  var nav = document.getElementById('nav');
+
+  // ── Open invitation ──
+  btnOpen.addEventListener('click', function() {
+    card.classList.add('opening');
+    setTimeout(function() {
+      overlay.classList.add('hidden');
+      mainPage.classList.add('visible');
+      document.body.style.overflow = '';
+    }, 500);
+  });
+
+  // Prevent body scroll behind overlay
+  document.body.style.overflow = 'hidden';
+
+  // ── Nav active state on scroll ──
+  var sections = [];
+  var navLinks = nav.querySelectorAll('a');
+  navLinks.forEach(function(a) {
+    var id = a.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if (el) sections.push({ el: el, link: a });
+  });
+
+  function updateNav() {
+    var scrollY = window.scrollY + 80;
+    sections.forEach(function(s) {
+      var top = s.el.offsetTop;
+      var bottom = top + s.el.offsetHeight;
+      if (scrollY >= top && scrollY < bottom) {
+        s.link.classList.add('active');
+      } else {
+        s.link.classList.remove('active');
+      }
+    });
+  }
+
+  window.addEventListener('scroll', updateNav, { passive: true });
+
+  // ── Fade-up on scroll (Intersection Observer) ──
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.fade-up').forEach(function(el) {
+    observer.observe(el);
+  });
+
+  // ── Trigger initial fade check ──
+  window.addEventListener('load', function() {
+    updateNav();
+  });
+
+})();
+</script>
+
+</body>
+</html>
